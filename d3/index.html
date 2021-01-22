@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+
+
+	<script src="d3.v6.js"></script>
+	<script src="data.js"></script>
+	<script src="index.js"></script>
+	<script>
+		// 需要一个容器 放绘制元素
+		// 需要绘制集合元素  节点 边
+		//其次需要布局算法进行交互展示优化 tree
+		//data 数据驱动视图展示
+		var tree = data => {
+		  const root = d3.hierarchy(data);
+		  root.dx = 10;
+		  root.dy = width / (root.height + 1);
+		  return d3.tree().nodeSize([root.dx, root.dy])(root);
+		}
+		 var width = 954;
+		const root = tree(data);
+		
+		let x0 = Infinity;
+		let x1 = -x0;
+		root.each(d => {
+		    if (d.x > x1) x1 = d.x;
+		    if (d.x < x0) x0 = d.x;
+		});
+		
+		 // const svg = d3.create("svg")
+		 const svg = d3.select("body").append("svg")
+      			.attr("viewBox", [0, 0, width, x1 - x0 + root.dx * 2]);
+      		// g是svg一个概念 g 用于将svg形状进行组合
+      	 const g = svg.append("g")
+	      .attr("font-family", "sans-serif")  //字体
+	      .attr("font-size", 10)  //字体大小
+	      .attr("transform", `translate(${root.dy / 3},${root.dx - x0})`);  //translate平移
+
+	      const link = g.append("g")
+	      		.attr("fill", "none")
+			    .attr("stroke", "#555")
+			    .attr("stroke-opacity", 0.4)  // 透明度
+			    .attr("stroke-width", 1.5) //描边宽度
+			  .selectAll("path")  //选择所有路径
+			    .data(root.links())
+			    .join("path")
+			      .attr("d", d3.linkHorizontal()  //切线水平位置的线
+			          .x(d => d.y)
+			          .y(d => d.x));
+			const node = g.append("g")
+				.attr("stroke-linejoin", "round") //round
+			    .attr("stroke-width", 3)  //描边宽度
+			    .selectAll("g")
+			    .data(root.descendants())
+			    .join("g")
+			      .attr("transform", d => `translate(${d.y},${d.x})`);
+			node.append("circle")
+				.attr("fill", d => d.children ? "#555" : "#999")  //填充
+      			.attr("r", 2.5);  //半径
+
+      		node.append("text")
+      			.attr("dy", "0.31em")
+      			.text(d=>d.data.name)
+
+
+	</script>
+</body>
+</html>

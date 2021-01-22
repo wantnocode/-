@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+
+<canvas id="canvas" width="1000" height="1000"></canvas>
+<script src="data.js"></script>
+<script src="fr_.js"></script>
+<script type="text/javascript" src="index.js"></script>
+
+<script>
+	
+
+	var canvas = document.getElementById("canvas");
+	// canvas.width = document.body.clientWidth;
+	fastV.init(canvas);
+
+	data.nodes.map(function(node){
+		var node_ = fastV.CircleNode(node.id,node.x,node.y);
+		fastV.nodes.push(node_);
+	})
+	function getNodeofLink(link){
+		var source,target;
+		fastV.nodes.map(e=>{
+			if(e.id == link.source){
+				source = e;
+			}
+			if(e.id == link.target){
+				target = e;
+			}
+		})
+		return {
+			"source":source,
+			"target":target
+		}
+	}
+	data.links.map(link=>{
+		// nodeA,nodeB
+		let o = getNodeofLink(link)
+		var link = fastV.FLink(o.source,o.target);
+		fastV.links.push(link);
+	})
+	// fastV
+	// var node =  fastV.CircleNode(1,100,100);
+	// fastV.nodes.push(node);
+	fastV.draw();
+
+	var layout,loopName;
+
+	// window.requestAnimationFrame();
+	layout = new FRlayout(fastV.nodes,fastV.links);
+	layout.initAlgo();
+	function loop(){
+
+		layout.runLayout();
+		fastV.draw();
+		loopName = requestAnimationFrame(loop)
+	}
+	loop();
+
+	// cancelAnimationFrame(loop);
+
+
+
+	
+</script>
+</body>
+</html>

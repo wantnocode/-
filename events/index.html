@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+
+	<canvas id="canvas" width="1000" height="1000"></canvas>
+	<script src="index.js"></script>
+
+	<script>
+		/*
+			获取画布
+			获取渲染上下文2d
+		*/
+
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+
+		var isSelected = false;
+
+		var c_rect = {
+			x:10,
+			y:10,
+			w:200,
+			h:200
+		} 
+		/*
+			1.绘制元素
+		*/
+
+		ctx.rect(10,10,200,200);
+		ctx.stroke();
+
+
+		/*
+			click
+			2元素的选中
+			需要获取你鼠标点击的xy, 判断绘制元素是否包含该坐标
+			3取消选中
+		*/
+
+		canvas.onclick = function(){
+			var x = event.pageX -  canvas.getBoundingClientRect().left;
+			var y = event.pageY -  canvas.getBoundingClientRect().top;
+			//判断你当前坐标是否在绘制路径里面
+			if(ctx.isPointInPath(x,y)){
+				//当前点击是该绘制元素
+				isSelected = true;
+				ctx.clearRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = "red";
+				ctx.rect(10,10,200,200);
+				ctx.fill();
+			}else{
+			 	isSelected = false;
+				ctx.clearRect(0,0,canvas.width,canvas.height);
+				ctx.rect(10,10,200,200);
+				ctx.stroke();
+			}
+		}
+
+		/*
+			 4复制选中元素 
+			 5粘贴选中元素
+		*/
+
+		document.body.oncopy = function(){
+			if(isSelected){
+				c_rect.x = 220;
+				c_rect.y = 220;
+			}
+		}
+
+		document.body.onpaste = function(){
+			if(isSelected && c_rect.x != 10){
+				ctx.fillRect(c_rect.x,c_rect.y,c_rect.w,c_rect.h)
+			}
+		}
+
+		/*
+			6.移动选中元素
+		*/
+		
+	</script>
+	
+</body>
+</html>

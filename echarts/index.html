@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="index.css">
+</head>
+<body>
+	<div id="box"></div>
+	<script src="data.js"></script>
+	<script src="echarts.min.js"></script>
+	<!-- <script src="index.js"></script> -->
+	<script>
+		// canvas 容器
+		//  绘制元素
+		//  data驱动
+
+		var dom = document.getElementById("box");
+		var mychart = echarts.init(dom);
+		option = {
+			title:{
+				text:"sankey"
+			},
+			series:[
+				{
+					type:"sankey",
+					data:data.nodes, //节点
+					links:data.links,
+					focusNodeAdjacency:"allEdges",
+					itemStyle:{
+						borderWidth:1
+					},
+					lineStyle:{
+						color:"source"
+					}
+
+				}
+
+			]
+		}
+		mychart.setOption(option)
+	</script>
+</body>
+</html>

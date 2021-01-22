@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+
+	<canvas id="canvas" width="1000" height="100"></canvas>
+	<script src="index.js"></script>
+
+	<script>
+		/*
+			获取画布
+			获取渲染上下文2d
+		*/
+
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+
+		var isSelected = false;
+
+		
+		/*
+			1.绘制元素
+		*/
+
+		
+
+
+		/*
+			click
+			2元素的选中
+			需要获取你鼠标点击的xy, 判断绘制元素是否包含该坐标
+			3取消选中
+		*/
+
+		canvas.onclick = function(){
+			var x = event.pageX -  canvas.getBoundingClientRect().left;
+			var y = event.pageY -  canvas.getBoundingClientRect().top;
+			//判断你当前坐标是否在绘制路径里面
+			if(ctx.isPointInPath(x,y)){
+				//当前点击是该绘制元素
+				isSelected = true;
+				ctx.clearRect(0,0,canvas.width,canvas.height);
+				ctx.fillStyle = "red";
+				ctx.rect(rect.x,rect.y,rect.w,rect.h);
+				ctx.fill();
+			}else{
+			 	isSelected = false;
+				ctx.clearRect(0,0,canvas.width,canvas.height);
+				ctx.rect(rect.x,rect.y,rect.w,rect.h);
+				ctx.stroke();
+			}
+		}
+
+		
+		/*
+			6.移动选中元素
+			 需要判断它是否被选中
+			 清空画布
+			 需要动态修改绘制坐标并随鼠标进行移动
+		*/
+		let rect = {
+			x:10,
+			y:10,
+			w:20,
+			h:20
+		}
+		
+		function draw(){
+			ctx.fillRect(rect.x,rect.y,rect.w,rect.h);
+			// ctx.stroke();
+
+		}
+
+		canvas.addEventListener("mousemove",function(e){
+			if(isSelected){
+				ctx.clearRect(0,0,canvas.width,canvas.height);
+				rect.x = e.offsetX;
+				rect.y = e.offsetY;
+				draw();
+			}
+		})
+		
+		draw()
+
+
+
+
+		/*
+			下载图片到本地
+		*/
+
+
+		canvas.toBlob(toBlobCallback('xiaotian'),"image/png");
+
+		function toBlobCallback(name){
+			return function(blob){
+				var a = document.createElement("a");
+				a.textContent = "下载";
+				a.style.display  = "block";
+				document.body.appendChild(a);
+				a.download = name + ".png";
+				a.href = window.URL.createObjectURL(blob);
+			}
+		}
+		
+
+	</script>
+	
+</body>
+</html>
